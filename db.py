@@ -1,6 +1,9 @@
 import mysql.connector
 from mysql.connector import errorcode
 
+
+#falta decidir la estructura de tablas de la aplicacion
+
 class ServicioMySQL:
     def __init__(self):
         self.config_servidor = {
@@ -53,5 +56,24 @@ class ServicioMySQL:
         cursor.close()
         conn.close
         return resultados
-        
     
+    def guardar_todo(self, lista_tareas_dict):
+        """
+        Sincroniza la lista completa con la DB. 
+        es más eficiente hacer inserts individuales, el ejemplo lo hice directo
+        """
+        conn = self._conectar_a_db()
+        cursor = conn.cursor()
+        
+        # Limpiamos para sincronizar el estado exacto
+        cursor.execute("TRUNCATE TABLE aqui van las tablas necesarias para el proyecto")
+
+        query = "INSERT INTO aqui van las tablas necesarias para el proyexto VALUES (%s, %s, %s)"
+        valores = [(t['id'], t['titulo'], t['completada']) for t in lista_tareas_dict] #cambiar los datos por los de la tablas necesarias para el proyecto
+
+        cursor.executemany(query,valores)
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+
