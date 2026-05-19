@@ -38,49 +38,25 @@ def decrypt(blob: bytes, key: bytes) -> bytes:
     nonce      = blob[:12]   # los primeros 12 bytes son el nonce que pusimos antes
     ciphertext = blob[12:]   # el resto es el mensaje cifrado + tag
     aesgcm = AESGCM(key)
-    # Si la clave es incorrecta o alguien modificó el archivo → lanza InvalidTag
+    # Si la clave es incorrecta o alguien modificó el archivo -> lanza InvalidTag
     return aesgcm.decrypt(nonce, ciphertext, None)
 
 
 def serialize_vault(plaintext: bytes, password: str) -> bytes:
-    # Layout final: [ 4B versión | 16B sal | 12B nonce | ciphertext | 16B tag ]
+    # final: 4B versión - 16B sal - 12B nonce - ciphertext - 16B tag 
     salt      = genera_sal()
     key       = derivar_clave(password, salt)
     encrypted = encrypt(plaintext, key)
 
-    version_bytes = struct.pack(">I", VERSION)  # entero → 4 bytes binarios
+    version_bytes = struct.pack(">I", VERSION)  # entero -> 4 bytes binarios
     return version_bytes + salt + encrypted
 
 
 def deserialize_vault(blob: bytes, password: str) -> bytes:
     version   = struct.unpack(">I", blob[:4])[0]  # por ahora no lo usamos, pero lo guardamos
-    salt      = blob[4:20]   # bytes 4 al 19 → la sal
-    encrypted = blob[20:]    # todo lo demás → datos cifrados
+    salt      = blob[4:20]   # bytes 4 al 19 -> la salt
+    encrypted = blob[20:]    # todo lo demás -> datos cifrados
 
     key = derivar_clave(password, salt)
     return decrypt(encrypted, key)  # lanza InvalidTag si la contraseña es incorrecta
     # Extraemos cada trozo según el layout definido arriba
-
-
-
-# if __name__ == "__main__":
-#     datos    = b'{"entries": []}'
-#     password = "MiContraseñaTest123!"
-
-#     # Cifrar y descifrar debe devolver lo mismo
-#     blob      = serialize_vault(datos, password)
-#     resultado = deserialize_vault(blob, password)
-#     assert resultado == datos, "ERROR: el descifrado no coincide"
-
-#     # 2. Contraseña incorrecta debe lanzar InvalidTag
-#     try:
-#         deserialize_vault(blob, "ContraseñaMal")
-#         assert False, "ERROR: debería haber fallado"
-#     except InvalidTag:
-#         pass  # correcto
-
-#     # 3. Dos cifrados del mismo dato deben ser distintos (nonce aleatorio)
-#     blob2 = serialize_vault(datos, password)
-#     assert blob != blob2, "ERROR: el nonce no es aleatorio"
-
-#     print("✓ crypto.py correcto, puedes continuar")
