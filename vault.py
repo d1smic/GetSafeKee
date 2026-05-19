@@ -64,9 +64,9 @@ class Vault:
     
     
     
-    def listar_entradas(self):
+    def listar_entradas(self): #borrar el print en la version final
         for entrada in self.entradas:
-            print(f"""
+            print(f"""                             
                     Servicio:{entrada["service"]}
                     Usuario:{entrada["username"]}
                     Password:{entrada["password"]}                
@@ -95,13 +95,12 @@ class Vault:
             self.entradas = json.loads(
                 textoplano.decode("utf-8")
             )
+            return True
 
         except InvalidTag:
             self.entradas = []
-            print("Contraseña incorrecta o vault corrupto")
-        else:
-            print("Vault abierto")
 
+            return False
 
 
 
