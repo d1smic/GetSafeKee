@@ -1,13 +1,10 @@
 import customtkinter as ctk
 from tkinter import filedialog
-from vault import Vault 
 
 class RegisterWindow(ctk.CTk):
 
-    def __init__(self,vault):
+    def __init__(self):
         super().__init__()
-
-        self.vault = vault
 
         self.title("REGISTER")
         self.geometry("700x500")
@@ -47,43 +44,24 @@ class RegisterWindow(ctk.CTk):
             height=40
         )
         self.password_entry.pack(pady=10)
-        
+
+        #
         register_btn = ctk.CTkButton(
             self,
             text="Crear archivo",
             fg_color="#1E8A2D",
             hover_color="#6B6B6B",
             width=300,
-            height=40,
-            command=self.crear_vault
+            height=40
         )
         register_btn.pack(pady=20)
-        
-    def crear_vault(self):
-        ruta = self.introducir_archivo.get()
-        master_password = self.password_entry.get()
-
-        if not ruta or not master_password:
-            print("Faltan datos")
-            return False
-            
-        ok = self.vault.save(ruta, master_password)
-
-        if ok:
-            print("Vault creado")
-        else:
-            print("Error en el vault")
-
-
-
 
     # FUNCION PARA SELECCIONAR ARCHIVO 
     def seleccionar_archivo(self):
-        archivo = filedialog.asksaveasfilename(defaultextension="bin",filetypes=[("Binary files","*.bin")])
+        archivo = filedialog.askopenfilename()
         self.introducir_archivo.delete(0, "end")
         self.introducir_archivo.insert(0, archivo)
 
 if __name__ == "__main__":
-    vault = Vault()
-    app = RegisterWindow(vault)
+    app = RegisterWindow()
     app.mainloop()
