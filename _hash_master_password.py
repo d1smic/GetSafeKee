@@ -27,11 +27,11 @@ class HashMasterPassword:
         else:
             print("No entras al sistema")
 
-prueba = HashMasterPassword()
-prueba.master_password_to_byte()
-prueba.salt_master_password_in_bytes()
-prueba.hash_master_password_in_bytes()
-prueba.check_master_password()
+# prueba = HashMasterPassword()
+# prueba.master_password_to_byte()
+# prueba.salt_master_password_in_bytes()
+# prueba.hash_master_password_in_bytes()
+# prueba.check_master_password()
     
 
 
