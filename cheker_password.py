@@ -34,7 +34,3 @@ class BreachChecker:
             label: self.check_password(pwd)
             for label, pwd in passwords.items()
         }
-
-
-
-
